@@ -1,26 +1,154 @@
-<html>
-    <head>
-        {{> head}}
-    </head>
-    <body>
-        <h2>Game code</h2>
-        <input type="text" id="codeInput">
-        <button id="createGame">Create game</button>
-        <button id="joinGame">Join game</button>
-        <div style="color: red" id="errorMessage"></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastiii Chezz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
 
-        <script>
-            $('#createGame').on('click', function() {
-                window.location.replace('/white?code=' + $('#codeInput').val());
-            });
-            $('#joinGame').on('click', function() {
-                window.location.replace('/black?code=' + $('#codeInput').val());
-            });
+        .container {
+            text-align: center;
+            background-color: #34495e;
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
 
-            var urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('error') == 'invalidCode') {
-                $('#errorMessage').text('Invalid invite code');
+        .container h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #e74c3c;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .container h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .container input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .container button {
+            width: 45%;
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: #e74c3c;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .container button:hover {
+            background-color: #c0392b;
+        }
+
+        #errorMessage {
+            color: #e74c3c;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        /* Improved Animation */
+        @keyframes slidein {
+            0% {
+                transform: translateX(-100%);
+                opacity: 0;
             }
-        </script>
-    </body>
+            50% {
+                transform: translateX(0%);
+                opacity: 1;
+            }
+            75% {
+                transform: translateX(5%);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .Hii {
+            font-size: 48px;
+            color: #e74c3c;
+            animation: slidein 5s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <i class="fa-solid fa-chess Hii"></i>
+        <h1>MASTIII CHEZZ !!!</h1>
+        <h2>Enter Game Code</h2>
+        <input type="text" id="codeInput" placeholder="Enter your game code">
+        <button id="createGame"><i class="fas fa-chess-knight"></i> Create Game</button>
+        <button id="joinGame"><i class="fas fa-chess"></i> Join Game</button>
+        <div id="errorMessage"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script>
+       $('#createGame').on('click', function() {
+    let code = $('#codeInput').val();
+    sessionStorage.setItem('gameCode', code); // Store the game code
+    window.location.replace('/white?code=' + code);
+});
+
+$('#joinGame').on('click', function() {
+    let code = $('#codeInput').val();
+    sessionStorage.setItem('gameCode', code); // Store the game code
+    window.location.replace('/black?code=' + code);
+});
+
+$(document).ready(function() {
+    let storedCode = sessionStorage.getItem('gameCode');
+    if (storedCode) {
+        // If a game code is stored, join the game automatically
+        let playerPath = window.location.pathname.includes('white') ? '/white' : '/black';
+        window.location.replace(playerPath + '?code=' + storedCode);
+    }
+
+    var urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('error') == 'invalidCode') {
+        $('#errorMessage').text('Invalid invite code');
+    }
+});
+// Clear session storage when the game ends or if there’s an error
+socket.on('gameOverDisconnect', function() {
+    sessionStorage.removeItem('gameCode');
+    alert('Game over, opponent disconnected.');
+});
+
+socket.on('invalidCode', function(message) {
+    sessionStorage.removeItem('gameCode');
+    alert(message); // Alert the user that the code is invalid
+});
+
+
+        
+    </script>
+</body>
 </html>
