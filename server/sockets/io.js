@@ -1,5 +1,3 @@
-
-
 module.exports = io => {
     io.on('connection', socket => {
         console.log('New socket connection');
@@ -31,7 +29,7 @@ module.exports = io => {
                 io.to(currentCode).emit('gameOverDisconnect');
                 delete games[currentCode];
             }
-        });
-
     });
+
+});
 };
