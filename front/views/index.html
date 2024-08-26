@@ -116,6 +116,13 @@
     sessionStorage.setItem('gameCode', code); // Store the game code
     window.location.replace('/white?code=' + code);
 });
+let storedCode = sessionStorage.getItem('gameCode');
+console.log(storedCode);
+if (storedCode) {
+    let playerPath = window.location.pathname.includes('white') ? '/white' : '/black';
+    window.location.replace(playerPath + '?code=' + storedCode);
+}
+
 
 $('#joinGame').on('click', function() {
     let code = $('#codeInput').val();
@@ -125,30 +132,59 @@ $('#joinGame').on('click', function() {
 
 $(document).ready(function() {
     let storedCode = sessionStorage.getItem('gameCode');
-    if (storedCode) {
-        // If a game code is stored, join the game automatically
+    let hasRedirected = sessionStorage.getItem('hasRedirected'); // Flag to track if redirect has happened
+    console.log('Stored game code:', storedCode);
+
+    // Prevent redirect if the correct path and code are already present
+    var urlParams = new URLSearchParams(window.location.search);
+    
+    // Check if we need to redirect and avoid repeated redirection
+    if (storedCode && !urlParams.has('code') && !hasRedirected) {
         let playerPath = window.location.pathname.includes('white') ? '/white' : '/black';
-        window.location.replace(playerPath + '?code=' + storedCode);
+
+        // Add a short timeout before redirecting
+        setTimeout(function() {
+            sessionStorage.setItem('hasRedirected', true); // Set flag to prevent further redirects
+            window.location.replace(playerPath + '?code=' + storedCode);
+        }, 500); // Adjust this delay as necessary (500ms here for testing)
     }
 
-    var urlParams = new URLSearchParams(window.location.search);
+    // Display error message for invalid code
     if (urlParams.get('error') == 'invalidCode') {
         $('#errorMessage').text('Invalid invite code');
     }
 });
+
+// Event handlers for create and join game buttons
+$('#createGame').on('click', function() {
+    let code = $('#codeInput').val();
+    sessionStorage.setItem('gameCode', code); // Store the game code
+    sessionStorage.setItem('hasRedirected', false); // Reset the redirection flag
+    window.location.replace('/white?code=' + code); // Redirect immediately
+});
+
+$('#joinGame').on('click', function() {
+    let code = $('#codeInput').val();
+    sessionStorage.setItem('gameCode', code); // Store the game code
+    sessionStorage.setItem('hasRedirected', false); // Reset the redirection flag
+    window.location.replace('/black?code=' + code); // Redirect immediately
+});
+
 // Clear session storage when the game ends or if there’s an error
 socket.on('gameOverDisconnect', function() {
     sessionStorage.removeItem('gameCode');
+    sessionStorage.removeItem('hasRedirected'); // Clear the flag
     alert('Game over, opponent disconnected.');
 });
 
 socket.on('invalidCode', function(message) {
     sessionStorage.removeItem('gameCode');
+    sessionStorage.removeItem('hasRedirected'); // Clear the flag
     alert(message); // Alert the user that the code is invalid
 });
 
 
-        
+
     </script>
 </body>
 </html>
