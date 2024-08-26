@@ -62,7 +62,7 @@ function updateStatus() {
     } else if (gameOver) {
         status = 'Opponent disconnected, you win!';
     } else if (!gameHasStarted) {
-        status = 'Waiting for black to join';
+        status = 'You were Disconnected';
     } else {
         status = moveColor + ' to move';
         if (game.in_check()) {
