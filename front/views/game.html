@@ -1,100 +1,160 @@
-<html>
-  <head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     {{> head}}
     <style>
-      body {
-        background-color: #34495e;
-        font-family: Arial, sans-serif;
-        color: #ecf0f1;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-      }
+        body {
+            background-color: #34495e;
+            font-family: Arial, sans-serif;
+            color: #ecf0f1;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-      #Board {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-      }
+        #Board {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 100%;
+            max-width: 900px;
+        }
 
-      #myBoard {
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-        border: 2px solid #ecf0f1;
-        border-radius: 10px;
-      }
+        #myBoard {
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            border: 2px solid #ecf0f1;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 700px;
+            aspect-ratio: 1 / 1;
+        }
 
-      #Status {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background-color: rgba(44, 62, 80, 0.9);
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        width: 250px;
-        color: white;
-      }
+        #Status {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(44, 62, 80, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 250px;
+            color: white;
+            z-index: 100;
+        }
 
-      #Status label {
-        font-size: 18px;
-        margin-bottom: 10px;
-        display: block;
-      }
+        #Status label {
+            font-size: 18px;
+            margin-bottom: 10px;
+            display: block;
+        }
 
-      #Status div {
-        font-size: 16px;
-        padding: 10px;
-        border: 1px solid #ecf0f1;
-        border-radius: 5px;
-        background-color: #2c3e50;
-        margin-bottom: 10px;
-        min-height: 40px;
-      }
+        #Status div {
+            font-size: 16px;
+            padding: 10px;
+            border: 1px solid #ecf0f1;
+            border-radius: 5px;
+            background-color: #2c3e50;
+            margin-bottom: 10px;
+            min-height: 40px;
+        }
 
-      #Timer {
-        font-size: 24px;
-        margin-top: 20px;
-        color: #e74c3c;
-      }
+        #Timer {
+            font-size: 24px;
+            margin-top: 20px;
+            color: #e74c3c;
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            #Board {
+                padding: 10px;
+            }
+
+            #Status {
+                width: 200px;
+                top: auto;
+                bottom: 20px;
+                right: 10px;
+            }
+
+            #Status label {
+                font-size: 16px;
+            }
+
+            #Status div {
+                font-size: 14px;
+            }
+
+            #Timer {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #Status {
+                width: 100%;
+                bottom: 0;
+                right: 0;
+                position: static;
+                box-shadow: none;
+            }
+
+            #Status label {
+                font-size: 14px;
+            }
+
+            #Status div {
+                font-size: 12px;
+            }
+
+            #Timer {
+                font-size: 18px;
+            }
+
+            #myBoard {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div id="Board">
-      <div id="myBoard" style="width: 700px"></div>
+        <div id="myBoard"></div>
     </div>
     <div id="Status">
-      <label>Status:</label>
-      <div id="status">Loading...</div>
-      <label>PGN:</label>
-      <div id="pgn">Loading...</div>
+        <label>Status:</label>
+        <div id="status">Loading...</div>
+        <label>PGN:</label>
+        <div id="pgn">Loading...</div>
     </div>
     <script>
-      let playerColor = "{{color}}";
-      let currentTurn = "White"; // Assume the game starts with White
+        let playerColor = "{{color}}";
+        let currentTurn = "White"; // Assume the game starts with White
 
-      if (playerColor === "Black") {
-        document.querySelector("#Status").style.color = "#e74c3c";
-      } else {
-        document.querySelector("#Status").style.color = "white";
-      }
-      console.log("Playing as " + playerColor);
+        if (playerColor === "Black") {
+            document.querySelector("#Status").style.color = "#e74c3c";
+        } else {
+            document.querySelector("#Status").style.color = "white";
+        }
+        console.log("Playing as " + playerColor);
 
-      // Timer variables
+        // Timer variables
 
-      // Function to switch turns
+        // Function to switch turns
 
-      // Example event listener for a move
-      document.addEventListener("moveMade", function (e) {
-        switchTurn();
-      });
+        // Example event listener for a move
+        document.addEventListener("moveMade", function (e) {
+            switchTurn();
+        });
 
-      // Initialize timer for the starting player
-      startTimer();
+        // Initialize timer for the starting player
+        startTimer();
     </script>
     <script src="/public/js/index.js"></script>
-  </body>
+</body>
 </html>
